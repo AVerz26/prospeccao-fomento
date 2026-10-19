@@ -1,0 +1,234 @@
+# Configuração da prospecção de tendências para editais de fomento (Mato Grosso)
+# Edite livremente: temas, palavras-chave, fontes e pesos.
+
+# Pesos do score final (somam 1.0). Métricas ausentes (fonte fora do ar) são redistribuídas.
+pesos:
+  sci_volume: 0.08     # volume de publicações científicas no último ano completo
+  sci_growth: 0.17     # crescimento da participação do tema na ciência (vs. todo o corpus)
+  conf_volume: 0.07    # volume em anais de congressos
+  conf_growth: 0.08    # crescimento em anais de congressos
+  funding: 0.20        # chamadas internacionais abertas (Horizon Europe + Grants.gov)
+  media: 0.10          # intensidade/tendência na mídia global (GDELT)
+  web: 0.08            # menções nas páginas de congressos/fomento/notícias monitoradas
+  trends: 0.04         # tendência de buscas no Google Trends (12 meses)
+  mt_fit: 0.18         # aderência à realidade de Mato Grosso (campo mt_fit de cada tema)
+
+gdelt:
+  timespan: 6months
+  headlines_por_tema: 5
+
+# Fontes para scraping/RSS. type: html | rss. categoria: congresso | fomento_br | noticia | ciencia
+# O scraper respeita robots.txt para páginas HTML e falha de forma silenciosa (registra aviso).
+fontes_web:
+  # FAPEMAT: o robots.txt do site bloqueia coleta automatizada; acompanhe manualmente ou peça um feed/API ao órgão.
+  - {nome: CNPq - Chamadas,          categoria: fomento_br, type: html, url: "https://www.gov.br/cnpq/pt-br/chamadas"}
+  - {nome: FINEP - Chamadas,         categoria: fomento_br, type: html, url: "http://www.finep.gov.br/chamadas-publicas"}
+  - {nome: FAPESP - Oportunidades,   categoria: fomento_br, type: html, url: "https://fapesp.br/oportunidades"}
+  - {nome: Embrapii,                 categoria: fomento_br, type: html, url: "https://embrapii.org.br/"}
+  - {nome: Fundo Amazônia,           categoria: fomento_br, type: html, url: "https://www.fundoamazonia.gov.br/pt/home/"}
+  - {nome: World Food Forum (FAO),   categoria: congresso,  type: html, url: "https://www.world-food-forum.org/"}
+  - {nome: FAO Newsroom,             categoria: congresso,  type: html, url: "https://www.fao.org/newsroom/en"}
+  - {nome: CAPES - Editais,          categoria: fomento_br, type: html, url: "https://www.gov.br/capes/pt-br/assuntos/editais-e-resultados-capes"}
+  - {nome: BNDES - Chamadas públicas, categoria: fomento_br, type: html, url: "https://www.bndes.gov.br/wps/portal/site/home/transparencia/chamadas-publicas"}
+  - {nome: Embrapa Notícias,         categoria: noticia,    type: html, url: "https://www.embrapa.br/busca-de-noticias"}
+  - {nome: Agrishow,                 categoria: congresso,  type: html, url: "https://www.agrishow.com.br/"}
+  - {nome: CGIAR News,               categoria: noticia,    type: html, url: "https://www.cgiar.org/news-events/"}
+  - {nome: Nature Food,              categoria: ciencia,    type: rss,  url: "https://www.nature.com/natfood.rss"}
+  - {nome: Nature Sustainability,    categoria: ciencia,    type: rss,  url: "https://www.nature.com/natsustain.rss"}
+  - {nome: Nature Climate Change,    categoria: ciencia,    type: rss,  url: "https://www.nature.com/nclimate.rss"}
+  - {nome: ScienceDaily Agricultura, categoria: ciencia,    type: rss,  url: "https://www.sciencedaily.com/rss/plants_animals/agriculture_and_food.xml"}
+  - {nome: ScienceDaily Clima,       categoria: ciencia,    type: rss,  url: "https://www.sciencedaily.com/rss/earth_climate/climate.xml"}
+  - {nome: Mongabay,                 categoria: noticia,    type: rss,  url: "https://news.mongabay.com/feed/"}
+  - {nome: Agência Fapesp,           categoria: noticia,    type: rss,  url: "https://agencia.fapesp.br/rss/"}
+
+# Temas. mt_fit: 1 (pouco aderente) a 5 (muito aderente a MT).
+temas:
+  - id: agro_digital_ia
+    nome: Agricultura digital, IA e agricultura de precisão
+    mt_fit: 5
+    keywords_en: ["precision agriculture", "digital agriculture", "smart farming", "agricultural artificial intelligence", "agtech"]
+    keywords_pt: ["agricultura de precisão", "agricultura digital", "inteligência artificial no agro", "agtech"]
+    extra_en: ["crop yield prediction", "machine learning agriculture", "digital twin farm", "variable rate application", "farm management software", "IoT agriculture sensors", "decision support system agriculture"]
+    extra_pt: ["previsão de safra", "aprendizado de máquina agricultura", "gêmeo digital", "taxa variável", "sensores IoT no campo", "internet das coisas agro"]
+    termos_amplos: ["agtech", "machine learning", "big data", "IoT", "inteligência artificial", "digital farming", "farmtech", "conectividade rural"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Chamada de P&D&I em IA aplicada ao agro (modelos preditivos de safra, visão computacional, gêmeos digitais de fazenda) com contrapartida de cooperativas e startups."
+
+  - id: bioinsumos
+    nome: Bioinsumos e controle biológico
+    mt_fit: 5
+    keywords_en: ["biofertilizer", "biopesticide", "biological control agent", "biostimulant", "plant growth-promoting bacteria"]
+    keywords_pt: ["bioinsumos", "controle biológico", "biofertilizante", "bioestimulante"]
+    extra_en: ["biological inputs", "microbial inoculant", "rhizobia inoculation", "Trichoderma", "Bacillus biocontrol", "entomopathogenic fungi", "on-farm production of biologicals", "biological nitrogen fixation"]
+    extra_pt: ["insumos biológicos", "inoculante", "fixação biológica de nitrogênio", "produção on farm", "fungos entomopatogênicos", "microrganismos promotores de crescimento"]
+    termos_amplos: ["bioinsumo", "biológico", "biológicos", "inoculante", "biocontrole", "microbioma", "Trichoderma", "Bacillus"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Edital de bioinsumos on-farm e inoculantes para soja/milho/algodão, com validação em campo e escalonamento industrial."
+
+  - id: agro_regenerativo_carbono
+    nome: Agricultura regenerativa, carbono no solo e ILPF
+    mt_fit: 5
+    keywords_en: ["regenerative agriculture", "soil carbon sequestration", "integrated crop-livestock-forestry", "no-till", "soil health"]
+    keywords_pt: ["agricultura regenerativa", "carbono no solo", "integração lavoura-pecuária-floresta", "ILPF", "plantio direto"]
+    extra_en: ["cover crops", "conservation agriculture", "soil organic carbon", "low-carbon agriculture", "agroforestry systems", "carbon farming", "tropical soils fertility"]
+    extra_pt: ["culturas de cobertura", "agricultura de baixo carbono", "plano ABC", "matéria orgânica do solo", "sistemas agroflorestais", "agricultura conservacionista", "recuperação de áreas degradadas"]
+    termos_amplos: ["regenerativ", "carbono no solo", "cobertura vegetal", "ILPF", "agrofloresta", "agroflorestal", "soil carbon", "soil health", "baixo carbono"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Chamada para MRV (medição, relato e verificação) de carbono no solo e saúde do solo em sistemas ILPF e plantio direto."
+
+  - id: bioenergia_combustiveis
+    nome: Bioenergia, etanol de milho e combustíveis sustentáveis
+    mt_fit: 5
+    keywords_en: ["corn ethanol", "sustainable aviation fuel", "biomethane", "biodiesel", "second-generation biofuel"]
+    keywords_pt: ["etanol de milho", "combustível sustentável de aviação", "biometano", "biodiesel", "biocombustíveis"]
+    extra_en: ["ethanol from maize", "renewable diesel", "biojet fuel", "biogas from vinasse", "bioenergy with carbon capture", "advanced biofuels", "co-products of ethanol DDGS", "biofuel policy"]
+    extra_pt: ["etanol de cana e milho", "diesel renovável", "bioquerosene", "biogás", "vinhaça", "RenovaBio", "Combustível do Futuro", "DDG"]
+    termos_amplos: ["etanol", "ethanol", "biodiesel", "biogás", "biogas", "biometano", "SAF", "RenovaBio", "biofuel", "biocombustível", "bioenergia", "bioenergy"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Edital de coprodutos do etanol de milho (DDGS, óleo, biometano de vinhaça) e rotas para SAF/diesel verde a partir de culturas e resíduos regionais."
+
+  - id: clima_adaptacao
+    nome: Mudanças climáticas, eventos extremos e adaptação
+    mt_fit: 5
+    keywords_en: ["climate change adaptation agriculture", "climate resilient crops", "extreme weather events agriculture", "drought tolerance crops"]
+    keywords_pt: ["adaptação às mudanças climáticas", "resiliência climática", "eventos extremos", "seca"]
+    extra_en: ["climate risk agriculture", "heat stress crops", "agricultural drought", "climate smart agriculture", "crop insurance climate", "climate services farmers", "flood risk agriculture", "climate vulnerability"]
+    extra_pt: ["risco climático", "estresse térmico", "agricultura climaticamente inteligente", "seguro rural", "serviços climáticos", "veranico", "El Niño", "La Niña"]
+    termos_amplos: ["climate", "clima", "climático", "El Niño", "La Niña", "heatwave", "onda de calor", "drought", "estiagem", "COP30", "COP31", "adaptation"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Chamada em zoneamento climático, cultivares tolerantes a veranico/seca e seguro/crédito paramétrico para o produtor."
+
+  - id: bioeconomia_amazonia_cerrado
+    nome: Bioeconomia, sociobiodiversidade (Amazônia, Cerrado, Pantanal)
+    mt_fit: 5
+    keywords_en: ["bioeconomy", "sociobiodiversity", "non-timber forest products", "Amazon bioeconomy", "Cerrado biodiversity"]
+    keywords_pt: ["bioeconomia", "sociobiodiversidade", "produtos da sociobiodiversidade", "Amazônia", "Cerrado", "Pantanal"]
+    extra_en: ["Amazon rainforest conservation", "forest bioeconomy", "Indigenous knowledge", "traditional communities livelihoods", "access and benefit sharing", "agroforestry Amazon", "biodiversity Cerrado", "Pantanal wetland", "sustainable forest management", "Brazil nut", "açaí"]
+    extra_pt: ["floresta em pé", "povos indígenas", "povos e comunidades tradicionais", "repartição de benefícios", "bioprospecção", "manejo florestal sustentável", "extrativismo", "castanha-do-brasil", "baru", "pequi", "Bioeconomia Amazônica", "economia da floresta"]
+    termos_amplos: ["bioeconomia", "bioeconomy", "sociobiodiversidade", "Amazônia", "Amazon", "Cerrado", "Pantanal", "floresta em pé", "indígena", "extrativismo", "biodiversidade", "biodiversity"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Edital de cadeias da sociobiodiversidade (baru, pequi, castanha, açaí, borracha) com povos e comunidades tradicionais e bioprospecção com repartição de benefícios."
+
+  - id: carbono_restauracao
+    nome: Mercado de carbono, restauração e pagamento por serviços ambientais
+    mt_fit: 5
+    keywords_en: ["carbon market", "forest restoration", "payment for ecosystem services", "REDD+", "nature-based solutions"]
+    keywords_pt: ["mercado de carbono", "restauração florestal", "pagamento por serviços ambientais", "REDD+", "soluções baseadas na natureza"]
+    extra_en: ["voluntary carbon market", "carbon credits integrity", "jurisdictional REDD+", "ecosystem restoration", "reforestation", "blue carbon", "carbon removal", "biodiversity credits", "natural capital", "Article 6 carbon markets"]
+    extra_pt: ["créditos de carbono", "mercado voluntário de carbono", "REDD+ jurisdicional", "restauração ecológica", "reflorestamento", "serviços ecossistêmicos", "crédito de biodiversidade", "mercado regulado de carbono", "SBCE"]
+    termos_amplos: ["carbon credit", "crédito de carbono", "carbono", "REDD", "restoration", "restauração", "reflorestamento", "reforestation", "offset", "net zero", "carbon market", "ecosystem services"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Chamada de restauração produtiva (SAFs, adequação ao Código Florestal) com monitoramento por satélite e projetos jurisdicionais de carbono."
+
+  - id: rastreabilidade_desmatamento
+    nome: Rastreabilidade e cadeias livres de desmatamento (EUDR)
+    mt_fit: 5
+    keywords_en: ["deforestation-free supply chains", "traceability agriculture", "EUDR", "blockchain traceability food", "supply chain transparency"]
+    keywords_pt: ["rastreabilidade", "livre de desmatamento", "cadeias livres de desmatamento", "EUDR"]
+    extra_en: ["EU Deforestation Regulation", "zero deforestation commitments", "soy moratorium", "cattle traceability", "due diligence supply chain", "sustainable commodities", "geolocation farms", "traceability blockchain", "land use change monitoring"]
+    extra_pt: ["regulamento europeu antidesmatamento", "desmatamento zero", "moratória da soja", "rastreabilidade bovina", "diligência devida", "commodities sustentáveis", "Cadastro Ambiental Rural", "CAR", "GTA", "protocolo de monitoramento"]
+    termos_amplos: ["EUDR", "desmatamento", "deforestation", "rastreabilidade", "traceability", "moratória da soja", "soy moratorium", "supply chain", "cadeia de suprimentos", "diligência"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Edital de plataformas de rastreabilidade de soja, carne e algodão (CAR, GTA, monitoramento) para adequação às exigências do mercado europeu."
+
+  - id: pecuaria_baixa_emissao
+    nome: Pecuária sustentável, metano e bem-estar animal
+    mt_fit: 5
+    keywords_en: ["enteric methane mitigation", "low-emission livestock", "pasture restoration", "precision livestock farming", "animal welfare"]
+    keywords_pt: ["pecuária de baixa emissão", "metano entérico", "recuperação de pastagens", "pecuária de precisão", "bem-estar animal"]
+    extra_en: ["methane emissions cattle", "feed additives methane", "grazing management", "beef sustainability", "dairy sustainability", "livestock genetics", "silvopasture", "pasture degradation", "greenhouse gas livestock", "livestock carbon footprint"]
+    extra_pt: ["emissões de metano bovino", "aditivos alimentares metano", "manejo de pastejo", "carne carbono neutro", "pecuária sustentável", "silvipastoril", "pastagens degradadas", "intensificação da pecuária", "rastreabilidade bovina", "boi sustentável"]
+    termos_amplos: ["pecuária", "livestock", "cattle", "bovino", "methane", "metano", "pastagem", "pasture", "beef", "carne", "gado", "dairy"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Chamada para recuperação de pastagens degradadas, aditivos para redução de metano e pecuária de precisão (brincos/sensores)."
+
+  - id: agua_irrigacao
+    nome: Segurança hídrica, irrigação e saneamento
+    mt_fit: 4
+    keywords_en: ["water use efficiency irrigation", "water security", "watershed management", "wastewater reuse agriculture"]
+    keywords_pt: ["eficiência no uso da água", "irrigação", "segurança hídrica", "bacias hidrográficas"]
+    extra_en: ["irrigation scheduling", "drought water scarcity", "groundwater depletion", "water footprint", "water quality agriculture", "soil moisture monitoring", "drip irrigation", "water governance", "watershed payment services"]
+    extra_pt: ["manejo da irrigação", "escassez hídrica", "crise hídrica", "outorga de água", "recursos hídricos", "monitoramento da umidade do solo", "nascentes", "pegada hídrica", "gestão de bacias"]
+    termos_amplos: ["água", "water", "irrigação", "irrigation", "hídrico", "hídrica", "nascente", "bacia hidrográfica", "watershed", "water scarcity", "aquífero"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Edital de irrigação eficiente em sequeiro/safrinha, gestão de bacias (Cabeceiras do Pantanal) e reúso de efluentes agroindustriais."
+
+  - id: saude_unica
+    nome: Saúde única, zoonoses e doenças tropicais
+    mt_fit: 4
+    keywords_en: ["One Health", "zoonotic diseases", "antimicrobial resistance", "neglected tropical diseases", "vector-borne diseases"]
+    keywords_pt: ["saúde única", "zoonoses", "resistência antimicrobiana", "doenças tropicais negligenciadas", "dengue"]
+    extra_en: ["pesticide exposure health", "foodborne disease", "zoonotic spillover", "pandemic preparedness", "vector control", "agricultural health workers", "mycotoxins", "avian influenza", "foot-and-mouth disease", "epidemiological surveillance"]
+    extra_pt: ["exposição a agrotóxicos", "doenças transmitidas por alimentos", "preparação para pandemias", "vigilância epidemiológica", "gripe aviária", "febre aftosa", "febre amarela", "malária", "leishmaniose", "chikungunya", "vigilância sanitária"]
+    termos_amplos: ["One Health", "saúde única", "zoonose", "zoonotic", "dengue", "malária", "gripe aviária", "avian flu", "antimicrobial", "pandemic", "pandemia", "epidemia", "outbreak"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Chamada de vigilância integrada (saúde humana-animal-ambiental) em áreas de fronteira agrícola e resistência antimicrobiana em produção animal."
+
+  - id: sensoriamento_geotecnologia
+    nome: Sensoriamento remoto, satélites e geotecnologias
+    mt_fit: 5
+    keywords_en: ["remote sensing agriculture", "satellite monitoring", "earth observation", "digital twin", "geospatial artificial intelligence"]
+    keywords_pt: ["sensoriamento remoto", "monitoramento por satélite", "observação da Terra", "geotecnologias"]
+    extra_en: ["Sentinel-2", "Landsat", "SAR radar monitoring", "land cover mapping", "cropland mapping", "NDVI", "hyperspectral", "GIS spatial analysis", "satellite crop monitoring", "foundation models earth observation"]
+    extra_pt: ["mapeamento do uso da terra", "imagens de satélite", "MapBiomas", "PRODES", "geoprocessamento", "radar", "índice de vegetação", "Google Earth Engine", "INPE"]
+    termos_amplos: ["satélite", "satellite", "remote sensing", "sensoriamento", "MapBiomas", "PRODES", "INPE", "Sentinel", "Landsat", "geoespacial", "geospatial", "earth observation", "NDVI"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Chamada em monitoramento por satélite de safra, queimadas e uso da terra, com dados abertos e capacitação de órgãos estaduais."
+
+  - id: robotica_drones
+    nome: Robótica, drones e automação agrícola
+    mt_fit: 4
+    keywords_en: ["agricultural robotics", "agricultural drones", "autonomous tractors", "UAV spraying", "precision spraying"]
+    keywords_pt: ["robótica agrícola", "drones agrícolas", "máquinas autônomas", "pulverização de precisão"]
+    extra_en: ["agricultural robot", "autonomous machinery", "unmanned aerial vehicle", "robotic harvesting", "weeding robot", "swarm robotics agriculture", "precision weeding", "see and spray", "agricultural automation", "computer vision field"]
+    extra_pt: ["robô agrícola", "veículo aéreo não tripulado", "pulverização com drone", "colheita robótica", "automação agrícola", "visão computacional", "tratores autônomos", "VANT"]
+    termos_amplos: ["drone", "drones", "robot", "robô", "robótica", "autonomous", "autônomo", "VANT", "UAV", "automação", "colheitadeira"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Edital de desenvolvimento nacional de drones/robôs para pulverização e monitoramento, com parceria ICT-indústria."
+
+  - id: manejo_fogo
+    nome: Manejo integrado do fogo e queimadas
+    mt_fit: 5
+    keywords_en: ["integrated fire management", "wildfire prevention", "wildfire early warning", "prescribed burning", "fire ecology savanna"]
+    keywords_pt: ["manejo integrado do fogo", "incêndios florestais", "queimadas", "brigadas de incêndio", "queima prescrita"]
+    extra_en: ["wildfire", "forest fire", "fire regime", "burned area mapping", "fire danger index", "smoke air quality", "fire suppression", "firefighting", "post-fire recovery", "fire risk Pantanal", "Cerrado fire"]
+    extra_pt: ["incêndio florestal", "queima controlada", "área queimada", "foco de calor", "risco de fogo", "combate a incêndios", "Prevfogo", "brigadistas", "Pantanal fogo", "fumaça", "focos de queimada"]
+    termos_amplos: ["wildfire", "incêndio", "queimada", "fogo", "focos de calor", "burned area", "smoke", "fumaça", "brigada", "Prevfogo"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Chamada de prevenção e alerta precoce de incêndios (Pantanal, Cerrado, Amazônia) com tecnologia, manejo do fogo e brigadas comunitárias."
+
+  - id: proteina_alimentos_valor
+    nome: Alimentos, proteínas alternativas e agregação de valor
+    mt_fit: 4
+    keywords_en: ["alternative proteins", "food processing innovation", "plant-based protein", "functional foods", "food loss and waste"]
+    keywords_pt: ["proteínas alternativas", "agroindustrialização", "alimentos funcionais", "perdas e desperdício de alimentos"]
+    extra_en: ["cultivated meat", "precision fermentation", "insect protein", "plant-based meat", "food technology", "food safety", "ultra-processed foods", "post-harvest loss", "novel foods", "agri-food value chain", "functional ingredients"]
+    extra_pt: ["carne cultivada", "fermentação de precisão", "proteína vegetal", "tecnologia de alimentos", "segurança dos alimentos", "alimentos ultraprocessados", "perdas pós-colheita", "cadeia de valor agroalimentar", "ingredientes funcionais", "agroindústria"]
+    termos_amplos: ["plant-based", "proteína", "protein", "food tech", "foodtech", "alimento", "ingredient", "ingrediente", "agroindústria", "processamento", "cultivated meat", "fermentação"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Edital de agroindustrialização regional: proteínas vegetais (soja, milho, pulses), ingredientes e redução de perdas pós-colheita."
+
+  - id: economia_circular
+    nome: Economia circular, biomateriais e resíduos do agro
+    mt_fit: 4
+    keywords_en: ["circular economy agriculture", "biomaterials from agricultural residues", "biochar", "agro-industrial waste valorization", "biorefinery"]
+    keywords_pt: ["economia circular", "resíduos agroindustriais", "biocarvão", "biorrefinaria", "biomateriais"]
+    extra_en: ["waste to energy agriculture", "composting", "bioplastics", "biomass valorization", "crop residues", "by-products valorization", "biochar soil", "anaerobic digestion", "cellulose nanomaterials", "lignocellulosic biomass"]
+    extra_pt: ["valorização de resíduos", "compostagem", "bioplásticos", "biomassa", "resíduos agrícolas", "coprodutos", "digestão anaeróbia", "casca", "palha", "reciclagem", "logística reversa"]
+    termos_amplos: ["circular economy", "economia circular", "resíduo", "waste", "biomass", "biomassa", "compost", "bioplastic", "coproduto", "by-product", "recycling", "reciclagem"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Chamada de valorização de resíduos (palha, caroço de algodão, torta, bagaço) em biomateriais, bioinsumos e energia."
+
+  - id: transicao_energetica
+    nome: "Transição energética: solar, hidrogênio verde e eletrificação"
+    mt_fit: 3
+    keywords_en: ["green hydrogen", "agrivoltaics", "solar energy rural", "energy storage", "electrification of agriculture"]
+    keywords_pt: ["hidrogênio verde", "energia solar", "geração distribuída rural", "armazenamento de energia"]
+    extra_en: ["solar photovoltaic rural", "wind energy", "battery storage", "biomass energy", "renewable energy agriculture", "electric vehicles agriculture", "hydrogen from biomass", "microgrids rural", "energy efficiency agroindustry", "decarbonization industry"]
+    extra_pt: ["energia fotovoltaica", "energia eólica", "baterias", "energia renovável", "microrredes", "eficiência energética", "descarbonização", "transição energética justa", "hidrogênio de baixo carbono"]
+    termos_amplos: ["solar", "fotovoltaic", "hidrogênio", "hydrogen", "wind", "eólica", "energy transition", "transição energética", "battery", "bateria", "renewable", "renovável", "descarbonização"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Edital de energia renovável na propriedade rural e na agroindústria (solar, biogás, armazenamento) e hidrogênio verde a partir de biomassa."
+
+  - id: seguranca_alimentar
+    nome: Segurança alimentar, nutrição e cadeias curtas
+    mt_fit: 3
+    keywords_en: ["food security", "sustainable food systems", "smallholder farmers", "family farming", "nutrition-sensitive agriculture"]
+    keywords_pt: ["segurança alimentar", "sistemas alimentares sustentáveis", "agricultura familiar", "assentamentos"]
+    extra_en: ["hunger and food insecurity", "food prices", "nutrition security", "smallholder resilience", "land tenure", "rural development", "rural youth", "agricultural extension", "school feeding", "local food systems", "food sovereignty", "agricultural trade"]
+    extra_pt: ["fome e insegurança alimentar", "preços dos alimentos", "assistência técnica e extensão rural", "juventude rural", "regularização fundiária", "alimentação escolar", "soberania alimentar", "Mapa da Fome", "ATER", "PAA", "PNAE"]
+    termos_amplos: ["food security", "segurança alimentar", "hunger", "fome", "famine", "nutrição", "nutrition", "agricultura familiar", "smallholder", "assentamento", "ATER", "alimentação escolar"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Chamada de tecnologias sociais para agricultura familiar e assentamentos: cadeias curtas, assistência técnica digital e alimentação escolar."
+
+  - id: genetica_melhoramento
+    nome: Melhoramento genético, edição gênica e fenotipagem
+    mt_fit: 5
+    keywords_en: ["CRISPR crop", "genome editing plants", "high-throughput phenotyping", "genomic selection", "crop breeding"]
+    keywords_pt: ["edição gênica", "melhoramento genético", "fenotipagem", "seleção genômica"]
+    extra_en: ["gene editing", "transgenic crops", "marker-assisted selection", "genomics crops", "plant breeding", "stress tolerant varieties", "soybean breeding", "maize breeding", "cotton breeding", "forage breeding", "bioinformatics plants"]
+    extra_pt: ["transgênicos", "cultivares", "seleção assistida por marcadores", "genômica", "soja melhoramento", "milho melhoramento", "algodão melhoramento", "biotecnologia vegetal", "bioinformática", "bancos de germoplasma"]
+    termos_amplos: ["CRISPR", "gene editing", "edição gênica", "cultivar", "transgênic", "genômica", "genomics", "germoplasma", "breeding", "melhoramento", "biotecnologia", "biotechnology"]   # só para casar com páginas web (mais permissivo)
+    edital_mt: "Edital de melhoramento e fenotipagem de alto rendimento para soja, milho, algodão e forrageiras adaptadas ao Cerrado/transição Amazônia."
