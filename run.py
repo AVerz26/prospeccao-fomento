@@ -9,7 +9,7 @@ import pathlib
 
 import yaml
 
-from prospeccao import analise, ciencia, editais, google, midia, relatorio, web
+from prospeccao import analise, ciencia, editais, google, midia, pdf, relatorio, web
 from prospeccao.util import ROOT, Http
 
 
@@ -29,6 +29,7 @@ def main() -> None:
     ap.add_argument("--skip", default="", help="fontes a pular: ciencia,editais,midia,gnews,trends,web")
     ap.add_argument("--temas", default="", help="limitar a alguns ids de tema (teste rápido)")
     ap.add_argument("--no-cache", action="store_true")
+    ap.add_argument("--cache-horas", type=float, default=12, help="validade do cache HTTP (padrão 12)")
     ap.add_argument("--config", default=str(ROOT / "config.yaml"))
     a = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s", datefmt="%H:%M:%S")
@@ -39,7 +40,7 @@ def main() -> None:
         t["keywords_pt"] = t["keywords_pt"] + t.pop("extra_pt", [])
     temas = [t for t in cfg["temas"] if not a.temas or t["id"] in a.temas.split(",")]
     skip = set(filter(None, a.skip.split(",")))
-    http = Http(use_cache=not a.no_cache)
+    http = Http(ttl_hours=a.cache_horas, use_cache=not a.no_cache)
 
     sci = None if "ciencia" in skip else ciencia.coletar(http, temas)
     edt = None if "editais" in skip else editais.coletar(http, temas)
@@ -58,6 +59,7 @@ def main() -> None:
     out = ROOT / "output" / dt.date.today().isoformat()
     out.mkdir(parents=True, exist_ok=True)
     relatorio.html_report(df, temas, sci, edt, med, wb, status, out / "relatorio.html", trd)
+    pdf.html_para_pdf(out / "relatorio.html", out / "relatorio.pdf")
     relatorio.excel(df, temas, sci, edt, med, wb, out / "prospeccao.xlsx", trd)
     relatorio.dump(out / "dados.json", ciencia=sci, editais=edt, midia=med, web=wb, trends=trd)
     relatorio.historico(df, ROOT / "output")

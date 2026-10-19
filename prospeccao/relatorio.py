@@ -47,7 +47,12 @@ th,td{padding:.45rem .6rem;border-bottom:1px solid #d8dee4;text-align:left}th{ba
 .card{border:1px solid #d8dee4;border-radius:8px;padding:1rem 1.2rem;margin:1.2rem 0}.card h3{margin:.1rem 0}
 .tag{background:#eef6ee;color:#1a7f37;border-radius:10px;padding:.1rem .6rem;font-size:.85em}
 .sug{background:#fff8e6;border-left:4px solid #bf8700;padding:.5rem .8rem;margin:.6rem 0}
-small,.mut{color:#59636e}a{color:#0969da}ul{margin:.3rem 0}"""
+small,.mut{color:#59636e}a{color:#0969da}ul{margin:.3rem 0}
+@page{size:A4;margin:14mm}
+@media print{body{max-width:none;margin:0;font-size:11.5px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+h1{font-size:22px}h2{font-size:17px;break-after:avoid}h3{break-after:avoid}
+.card,tr,li{break-inside:avoid}.card{margin:.8rem 0;padding:.7rem 1rem}
+th,td{padding:.2rem .4rem}td:nth-child(4){width:70px!important}td:nth-child(2){width:46%}h1{margin-top:0}.sub{font-size:11px}}"""
 
 
 def html_report(df, temas, ciencia, editais, midia, web, status_web, path: pathlib.Path, trends=None) -> None:
