@@ -5,6 +5,7 @@ import datetime as dt
 import json
 import logging
 import re
+import unicodedata
 
 from .util import Http
 
@@ -21,13 +22,15 @@ _STOP = {"and", "for", "the", "with", "from", "into", "of", "in", "on"}
 
 
 def _tokens(txt: str) -> set[str]:
-    return {w[:6] for w in re.findall(r"[a-z0-9]+", txt.lower()) if len(w) >= 3 and w not in _STOP}
+    txt = unicodedata.normalize("NFKD", txt).encode("ascii", "ignore").decode().lower()  # açaí -> acai
+    return {w[:6] for w in re.findall(r"[a-z0-9]+", txt) if len(w) >= 3 and w not in _STOP}
 
 
 def relevante(texto: str, keywords: list[str]) -> bool:
-    """A busca das APIs é frouxa (OR entre termos): exige que todos os termos de ao menos uma palavra-chave apareçam."""
+    """A busca das APIs é frouxa (OR entre termos): exige que todos os termos de ao menos uma palavra-chave apareçam.
+    Palavras-chave sem termos válidos são ignoradas (conjunto vazio casaria com qualquer título)."""
     toks = _tokens(texto)
-    return any(_tokens(k) <= toks for k in keywords)
+    return any(kt and kt <= toks for kt in map(_tokens, keywords))
 
 
 def _first(md: dict, key: str):
