@@ -17,3 +17,22 @@ A cada execução:
 * o GDELT é pulado (IPs de runners costumam receber 429) e o Google News assume a mídia.
 
 Falhas de uma fonte não derrubam o job: o relatório sai sem aquele sinal e os pesos se redistribuem.
+
+## Envio do relatório por e-mail (opcional)
+
+Ao final de cada execução, `enviar_email.py` manda o ranking (corpo) + `relatorio.html` e `prospeccao.xlsx` (anexos).
+Sem as credenciais abaixo o passo é ignorado e o job segue normalmente.
+
+Em **Settings → Secrets and variables → Actions → Secrets**:
+
+| Secret | Valor |
+|---|---|
+| `SMTP_USER` | e-mail remetente (ex.: sua conta Gmail) |
+| `SMTP_PASSWORD` | **senha de app**, não a senha da conta (Gmail: Conta Google → Segurança → Verificação em duas etapas → Senhas de app) |
+| `EMAIL_TO` | destinatários separados por vírgula |
+
+Opcionais (em **Variables**): `SMTP_HOST` (padrão `smtp.gmail.com`) e `SMTP_PORT` (padrão `465`/SSL; para Microsoft 365 use
+`smtp.office365.com` e `587`, que usa STARTTLS — pode exigir SMTP autenticado habilitado pelo administrador do tenant).
+
+Teste local sem enviar: `python enviar_email.py AAAA-MM-DD --dry-run` (grava um `.eml`).
+
