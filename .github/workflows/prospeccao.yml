@@ -58,25 +58,29 @@ jobs:
           DIA=$(ls -1 output | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' | sort | tail -1)
           mkdir -p "resultados/$DIA"
           cp "output/$DIA/relatorio.html" "output/$DIA/prospeccao.xlsx" "resultados/$DIA/"
+          cp "output/$DIA/relatorio.pdf" "resultados/$DIA/"
+          cp "output/$DIA/relatorio.pdf" resultados/relatorio-atual.pdf
           cp output/historico_scores.csv resultados/
           echo "DIA=$DIA" >> "$GITHUB_ENV"
 
+      - name: Atualizar README com o último relatório
+        run: python atualizar_readme.py "$DIA"
+
       - uses: actions/upload-artifact@v4
         with:
-          name: prospeccao-${{ env.DIA }}
-          path: |
-            output/${{ env.DIA }}/relatorio.html
-            output/${{ env.DIA }}/prospeccao.xlsx
-            output/${{ env.DIA }}/dados.json
+          name: relatorio-${{ env.DIA }}
+          path: output/${{ env.DIA }}/relatorio.pdf
+          if-no-files-found: error
           retention-days: 90
 
       - name: Commitar resultados
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-                    git add resultados
+          git add resultados README.md
           if git diff --cached --quiet; then echo "Sem mudanças"; exit 0; fi
           git commit -m "Prospecção de ${DIA}"
+          # o remoto pode ter avançado durante a execução: integra e tenta de novo
           for i in 1 2 3; do
             git pull --rebase origin main && git push && exit 0
             sleep 5
