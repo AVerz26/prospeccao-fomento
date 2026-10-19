@@ -36,21 +36,40 @@ def _news(http: Http, q: str) -> list[dict]:
     return out
 
 
+TETO = 90          # o feed corta em ~100 itens/consulta; acima disso a janela é dividida
+MIN_DIAS = 2       # não divide janelas menores que isso
+
+
+def _janela(http: Http, base: str, ini: dt.date, fim: dt.date) -> tuple[dict[str, dict], bool]:
+    """Itens (por link) publicados em [ini, fim). Divide ao meio se a consulta bater no teto do feed.
+    Retorna também se alguma janela mínima ainda saturou (contagem então é um piso)."""
+    itens = _news(http, f"{base} after:{ini} before:{fim}")
+    if len(itens) < TETO or (fim - ini).days <= MIN_DIAS:
+        return {i["url"]: i for i in itens}, len(itens) >= TETO
+    meio = ini + (fim - ini) / 2
+    a, sa = _janela(http, base, ini, meio)
+    b, sb = _janela(http, base, meio, fim)
+    return {**a, **b}, sa or sb
+
+
 def noticias(http: Http, temas: list[dict], n_manchetes: int = 5) -> dict[str, dict]:
     """Mesmo formato do coletor GDELT: intensidade, tendência (30d vs 30d anteriores) e manchetes.
-    O feed devolve no máximo ~100 itens por consulta: temas muito quentes saturam e a tendência tende a 0."""
+    O feed corta em ~100 itens por consulta; janelas que saturam são subdivididas e somadas."""
     hoje = dt.date.today()
     d30, d60 = hoje - dt.timedelta(days=30), hoje - dt.timedelta(days=60)
     out: dict[str, dict] = {}
     for t in temas:
         base = or_query(t["keywords_en"], 6)
-        rec = _news(http, f"{base} after:{d30} before:{hoje}")
-        ant = _news(http, f"{base} after:{d60} before:{d30}")
+        rec, sat_r = _janela(http, base, d30, hoje)
+        ant, sat_a = _janela(http, base, d60, d30)
         if not rec and not ant:
             continue
+        # manchetes: as mais relevantes do período (1ª página do feed, ordenada por relevância)
+        manchetes = _news(http, f"{base} after:{d30} before:{hoje}")[:n_manchetes]
         out[t["id"]] = {"intensidade": len(rec), "tendencia": (len(rec) / len(ant) - 1) if ant else None,
-                        "manchetes": rec[:n_manchetes], "fonte": "Google News"}
-        log.info("GNews   %-32s %3d (30d) vs %3d (30d ant.)", t["id"], len(rec), len(ant))
+                        "manchetes": manchetes, "fonte": "Google News", "saturado": sat_r or sat_a}
+        log.info("GNews   %-32s %4d (30d) vs %4d (30d ant.)%s", t["id"], len(rec), len(ant),
+                 "  [piso: ainda saturou]" if sat_r or sat_a else "")
     return out
 
 
