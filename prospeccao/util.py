@@ -58,7 +58,7 @@ class Http:
 
     def request(self, method: str, url: str, *, params: dict | None = None,
                 json_body: dict | None = None, multipart: dict[str, str] | None = None,
-                min_interval: float = 0.0, timeout: int = 40) -> str | None:
+                headers: dict | None = None, min_interval: float = 0.0, timeout: int = 40) -> str | None:
         """Retorna o corpo como texto, ou None em caso de falha (nunca levanta)."""
         key = hashlib.sha1(json.dumps([method, url, params, json_body, multipart],
                                       sort_keys=True, default=str).encode()).hexdigest()
@@ -68,7 +68,8 @@ class Http:
         self._throttle(url, min_interval)
         try:
             files = {k: (None, v, "application/json") for k, v in multipart.items()} if multipart else None
-            r = self.s.request(method, url, params=params, json=json_body, files=files, timeout=timeout)
+            r = self.s.request(method, url, params=params, json=json_body, files=files, headers=headers,
+                               timeout=timeout)
             r.raise_for_status()
         except requests.RequestException as e:
             log.warning("Falha em %s %s: %s", method, url, e)

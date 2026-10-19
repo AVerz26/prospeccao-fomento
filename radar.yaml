@@ -1,0 +1,134 @@
+# Radar de tecnologias emergentes: lista própria, mais granular que os temas do config.yaml.
+# Procura sinais de estágio inicial: preprints, código aberto novo, startups recentes e editais de pesquisa (não de inovação madura).
+
+pesos:
+  cresc_pesquisa: 0.25    # crescimento de preprints (OpenAlex + arXiv), últimos 6 meses vs. 6 anteriores
+  atividade_pesquisa: 0.10 # volume recente de preprints (precisa haver atividade, não só ruído)
+  codigo: 0.20            # repositórios novos no GitHub (12m vs 12m anteriores) + modelos/datasets novos no Hugging Face
+  startups: 0.15          # empresas do Y Combinator (últimas 3 turmas/anos) + menções em AgFunder News
+  financiamento_inicial: 0.15  # chamadas Horizon abertas do tipo "Research and Innovation Actions"/EIC (proxy de TRL baixo)
+  imaturidade: 0.10       # quanto MENOR o volume total de publicações, mais cedo o estágio
+  mt_fit: 0.05            # aderência a Mato Grosso (1-5)
+
+# busca: termos curtos para Hugging Face e Y Combinator (que buscam por nome/texto livre).
+tecnologias:
+  - id: geo_foundation
+    nome: Modelos de fundação para observação da Terra
+    mt_fit: 5
+    kw: ["geospatial foundation model", "earth observation foundation model", "satellite embeddings", "remote sensing foundation model"]
+    busca: ["geospatial", "earth observation"]
+  - id: llm_agro
+    nome: IA generativa e assistentes (LLM) para agronomia
+    mt_fit: 4
+    kw: ["agricultural large language model", "LLM agriculture", "generative AI agriculture", "agronomy chatbot"]
+    busca: ["agriculture llm", "agronomy"]
+  - id: robo_capina
+    nome: Robôs autônomos e capina a laser
+    mt_fit: 4
+    kw: ["laser weeding", "autonomous weeding robot", "agricultural robot", "robotic weed control"]
+    busca: ["weeding", "agricultural robot"]
+  - id: pulverizacao_alvo
+    nome: Pulverização localizada (see-and-spray) e drones de aplicação
+    mt_fit: 5
+    kw: ["see and spray", "targeted spraying", "precision spraying drone", "variable rate spraying"]
+    busca: ["spraying", "crop spraying"]
+  - id: uav_lidar
+    nome: Drones com LiDAR e biomassa/carbono florestal
+    mt_fit: 4
+    kw: ["UAV LiDAR biomass", "forest carbon LiDAR", "drone LiDAR vegetation", "canopy height mapping"]
+    busca: ["lidar", "forest carbon"]
+  - id: edicao_genomica
+    nome: Edição genômica (base/prime editing) em culturas
+    mt_fit: 5
+    kw: ["base editing plants", "prime editing crops", "CRISPR crop improvement", "genome editing soybean"]
+    busca: ["crispr", "genome editing"]
+  - id: fenotipagem_ia
+    nome: Fenotipagem de alto rendimento com IA e hiperespectral
+    mt_fit: 4
+    kw: ["high-throughput plant phenotyping", "hyperspectral crop imaging", "deep learning phenotyping", "UAV phenotyping"]
+    busca: ["phenotyping", "hyperspectral"]
+  - id: rnai_peptideos
+    nome: RNAi pulverizável e peptídeos para proteção de plantas
+    mt_fit: 4
+    kw: ["sprayable RNAi", "dsRNA biopesticide", "antimicrobial peptides crop protection", "RNA interference pest control"]
+    busca: ["rnai", "biopesticide"]
+  - id: syncom
+    nome: Consórcios microbianos sintéticos e engenharia do microbioma
+    mt_fit: 5
+    kw: ["synthetic microbial community plants", "SynCom", "rhizosphere microbiome engineering", "microbial consortia crops"]
+    busca: ["microbiome", "biologicals"]
+  - id: fixacao_n_cereais
+    nome: Fixação biológica de nitrogênio em cereais
+    mt_fit: 5
+    kw: ["nitrogen fixation cereals", "engineered nitrogen-fixing bacteria", "nitrogenase engineering", "biological nitrogen fixation maize"]
+    busca: ["nitrogen fixation", "nitrogen fixing"]
+  - id: rochagem
+    nome: Intemperismo acelerado de rochas (rochagem) e remoção de carbono
+    mt_fit: 5
+    kw: ["enhanced rock weathering", "rock dust agriculture", "basalt soil amendment", "silicate rock carbon removal"]
+    busca: ["rock weathering", "carbon removal"]
+  - id: mrv_solo
+    nome: MRV de carbono no solo com sensoriamento e IA
+    mt_fit: 5
+    kw: ["soil carbon MRV", "soil organic carbon remote sensing", "digital soil mapping carbon", "soil carbon measurement"]
+    busca: ["soil carbon", "carbon mrv"]
+  - id: metano_aditivos
+    nome: Redução de metano entérico (aditivos e vacinas)
+    mt_fit: 5
+    kw: ["3-NOP methane", "Asparagopsis methane", "methane vaccine ruminants", "enteric methane inhibitor"]
+    busca: ["methane cattle", "enteric methane"]
+  - id: saf_etanol
+    nome: Combustível de aviação sustentável a partir de etanol (alcohol-to-jet)
+    mt_fit: 5
+    kw: ["alcohol-to-jet", "ethanol to jet fuel", "sustainable aviation fuel ethanol", "ethanol upgrading jet"]
+    busca: ["alcohol to jet", "sustainable aviation fuel"]
+  - id: biometano
+    nome: Biometano de vinhaça e resíduos agroindustriais
+    mt_fit: 5
+    kw: ["biomethane from vinasse", "biogas upgrading agroindustrial", "biomethane agricultural residues", "anaerobic digestion vinasse"]
+    busca: ["biomethane", "biogas"]
+  - id: amonia_verde
+    nome: Amônia verde e fertilizantes nitrogenados de baixa emissão
+    mt_fit: 5
+    kw: ["green ammonia fertilizer", "electrochemical nitrogen fertilizer", "plasma nitrogen fixation", "low-carbon nitrogen fertilizer"]
+    busca: ["green ammonia", "fertilizer"]
+  - id: fermentacao_precisao
+    nome: Fermentação de precisão e biomanufatura de insumos
+    mt_fit: 4
+    kw: ["precision fermentation", "biomanufacturing agricultural inputs", "cell-free protein production", "microbial protein production"]
+    busca: ["precision fermentation", "biomanufacturing"]
+  - id: sensores_solo_iot
+    nome: Sensores de solo de baixo custo e IoT rural (LoRa/satélite)
+    mt_fit: 5
+    kw: ["low-cost soil sensor", "LoRaWAN agriculture", "direct-to-satellite IoT agriculture", "wireless soil moisture sensor"]
+    busca: ["soil sensor", "lorawan"]
+  - id: gemeo_cultivo
+    nome: Gêmeos digitais de fazenda e modelos de cultivo com IA
+    mt_fit: 5
+    kw: ["crop digital twin", "farm digital twin", "crop model machine learning", "process-based crop model deep learning"]
+    busca: ["digital twin", "crop model"]
+  - id: clima_ia
+    nome: Previsão de clima e tempo com IA
+    mt_fit: 5
+    kw: ["AI weather forecasting", "subseasonal forecasting deep learning", "GraphCast", "machine learning seasonal forecast agriculture"]
+    busca: ["weather forecasting", "weather model"]
+  - id: incendio_ia
+    nome: Detecção precoce de incêndios com IA e satélite
+    mt_fit: 5
+    kw: ["wildfire detection deep learning", "fire detection satellite", "early wildfire detection camera", "burned area deep learning"]
+    busca: ["wildfire", "fire detection"]
+  - id: rastreio_isotopos_dna
+    nome: Rastreabilidade por DNA, isótopos e geolocalização
+    mt_fit: 5
+    kw: ["DNA traceability", "isotopic origin verification", "geolocation traceability supply chain", "commodity traceability deforestation"]
+    busca: ["traceability", "supply chain"]
+  - id: genomica_pecuaria
+    nome: Seleção genômica e melhoramento de gado tropical
+    mt_fit: 5
+    kw: ["genomic selection cattle", "livestock genomic prediction", "tropical cattle genomics", "Nelore genomic"]
+    busca: ["genomic selection", "livestock genomics"]
+  - id: agrivoltaica
+    nome: Agrivoltaica (solar e cultivo na mesma área)
+    mt_fit: 3
+    kw: ["agrivoltaics", "agrophotovoltaic", "solar crop co-location", "dual-use solar farmland"]
+    busca: ["agrivoltaic", "agrivoltaics"]

@@ -9,7 +9,7 @@ import pathlib
 
 import yaml
 
-from prospeccao import analise, ciencia, editais, google, midia, pdf, relatorio, web
+from prospeccao import analise, ciencia, editais, emergentes, google, midia, pdf, radar_relatorio, relatorio, web
 from prospeccao.util import ROOT, Http
 
 
@@ -26,9 +26,10 @@ def carregar_env() -> None:
 def main() -> None:
     carregar_env()
     ap = argparse.ArgumentParser()
-    ap.add_argument("--skip", default="", help="fontes a pular: ciencia,editais,midia,gnews,trends,web")
+    ap.add_argument("--skip", default="", help="fontes a pular: ciencia,editais,midia,gnews,trends,web,radar")
     ap.add_argument("--temas", default="", help="limitar a alguns ids de tema (teste rápido)")
     ap.add_argument("--no-cache", action="store_true")
+    ap.add_argument("--radar-tudo", action="store_true", help="com --temas, roda todas as tecnologias do radar mesmo assim")
     ap.add_argument("--cache-horas", type=float, default=12, help="validade do cache HTTP (padrão 12)")
     ap.add_argument("--config", default=str(ROOT / "config.yaml"))
     a = ap.parse_args()
@@ -55,17 +56,28 @@ def main() -> None:
     wb, status = ({}, {}) if "web" in skip else web.coletar(http, cfg["fontes_web"], temas)
     wb = wb or None
 
+    # Radar de tecnologias emergentes (lista própria, em radar.yaml)
+    radar_cfg = yaml.safe_load((ROOT / "radar.yaml").read_text(encoding="utf-8"))
+    techs = [t for t in radar_cfg["tecnologias"] if not a.temas or a.radar_tudo]
+    rdados = None if "radar" in skip or not techs else (emergentes.coletar(http, techs) or None)
+    rdf = emergentes.calcular(techs, radar_cfg["pesos"], rdados) if rdados else None
+    radar_html = radar_relatorio.html_secao(rdf, techs, rdados) if rdados else ""
+    radar_abas = radar_relatorio.abas_excel(rdf, techs, rdados) if rdados else None
+
     df = analise.calcular(temas, cfg["pesos"], sci, edt, med, wb, trd)
     out = ROOT / "output" / dt.date.today().isoformat()
     out.mkdir(parents=True, exist_ok=True)
-    relatorio.html_report(df, temas, sci, edt, med, wb, status, out / "relatorio.html", trd)
+    relatorio.html_report(df, temas, sci, edt, med, wb, status, out / "relatorio.html", trd, radar_html)
     pdf.html_para_pdf(out / "relatorio.html", out / "relatorio.pdf")
-    relatorio.excel(df, temas, sci, edt, med, wb, out / "prospeccao.xlsx", trd)
-    relatorio.dump(out / "dados.json", ciencia=sci, editais=edt, midia=med, web=wb, trends=trd)
+    relatorio.excel(df, temas, sci, edt, med, wb, out / "prospeccao.xlsx", trd, radar_abas)
+    relatorio.dump(out / "dados.json", ciencia=sci, editais=edt, midia=med, web=wb, trends=trd, radar=rdados)
     relatorio.historico(df, ROOT / "output")
 
     print("\n=== RANKING ===")
     print(df[["tema", "score"]].to_string())
+    if rdf is not None:
+        print("\n=== RADAR DE TECNOLOGIAS EMERGENTES ===")
+        print(rdf[["tecnologia", "score", "estagio"]].to_string())
     print(f"\nRelatório: {out / 'relatorio.html'}\nPlanilha:  {out / 'prospeccao.xlsx'}")
 
 

@@ -55,7 +55,7 @@ h1{font-size:22px}h2{font-size:17px;break-after:avoid}h3{break-after:avoid}
 th,td{padding:.2rem .4rem}td:nth-child(4){width:70px!important}td:nth-child(2){width:46%}h1{margin-top:0}.sub{font-size:11px}}"""
 
 
-def html_report(df, temas, ciencia, editais, midia, web, status_web, path: pathlib.Path, trends=None) -> None:
+def html_report(df, temas, ciencia, editais, midia, web, status_web, path: pathlib.Path, trends=None, radar_html: str = "") -> None:
     by_id = {t["id"]: t for t in temas}
     hoje = dt.date.today().strftime("%d/%m/%Y")
     out = [f"<!doctype html><meta charset=utf-8><title>Prospecção de tendências – MT</title><style>{CSS}</style>",
@@ -72,6 +72,8 @@ def html_report(df, temas, ciencia, editais, midia, web, status_web, path: pathl
                    f"<td>{'n/d' if pd.isna(r['funding']) else int(r['funding'])}</td>"
                    f"<td>{_pct(r['media_tendencia'])}</td></tr>")
     out.append("</table>")
+    if radar_html:
+        out.append(radar_html)
 
     out.append("<h2>Detalhe por tema</h2>")
     for tid, r in df.iterrows():
@@ -125,7 +127,7 @@ def html_report(df, temas, ciencia, editais, midia, web, status_web, path: pathl
     path.write_text("\n".join(out), encoding="utf-8")
 
 
-def excel(df, temas, ciencia, editais, midia, web, path: pathlib.Path, trends=None) -> None:
+def excel(df, temas, ciencia, editais, midia, web, path: pathlib.Path, trends=None, extras: dict | None = None) -> None:
     by_id = {t["id"]: t for t in temas}
     ranking = df.reset_index().rename(columns={
         "tema": "Tema", "score": "Score", "sci_volume": "Publicações (ano ref.)",
@@ -146,7 +148,7 @@ def excel(df, temas, ciencia, editais, midia, web, path: pathlib.Path, trends=No
         for nome, dados in (("Ranking", ranking), ("Chamadas internacionais", pd.DataFrame(chamadas)),
                             ("Menções web", pd.DataFrame(mencoes)), ("Manchetes", pd.DataFrame(manchetes)),
                             ("Trabalhos citados", pd.DataFrame(papers)),
-                            ("Buscas Google em alta", pd.DataFrame(buscas))):
+                            ("Buscas Google em alta", pd.DataFrame(buscas)), *(extras or {}).items()):
             dados.to_excel(xw, sheet_name=nome, index=False)
             ws = xw.sheets[nome]
             ws.freeze_panes = "A2"
