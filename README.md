@@ -5,16 +5,16 @@
 
 | # | Tema | Score |
 |---|---|---|
-| 1 | Agricultura digital, IA e agricultura de precisão | 77 |
+| 1 | Mercado de carbono, restauração e pagamento por serviços ambientais | 76 |
 | 2 | Segurança alimentar, nutrição e cadeias curtas | 76 |
-| 3 | Mercado de carbono, restauração e pagamento por serviços ambientais | 74 |
-| 4 | Bioeconomia, sociobiodiversidade (Amazônia, Cerrado, Pantanal) | 72 |
+| 3 | Agricultura digital, IA e agricultura de precisão | 75 |
+| 4 | Bioeconomia, sociobiodiversidade (Amazônia, Cerrado, Pantanal) | 71 |
 | 5 | Sensoriamento remoto, satélites e geotecnologias | 71 |
-| 6 | Agricultura regenerativa, carbono no solo e ILPF | 61 |
-| 7 | Saúde única, zoonoses e doenças tropicais | 60 |
-| 8 | Alimentos, proteínas alternativas e agregação de valor | 60 |
-| 9 | Segurança hídrica, irrigação e saneamento | 58 |
-| 10 | Melhoramento genético, edição gênica e fenotipagem | 58 |
+| 6 | Agricultura regenerativa, carbono no solo e ILPF | 62 |
+| 7 | Saúde única, zoonoses e doenças tropicais | 62 |
+| 8 | Alimentos, proteínas alternativas e agregação de valor | 59 |
+| 9 | Melhoramento genético, edição gênica e fenotipagem | 58 |
+| 10 | Segurança hídrica, irrigação e saneamento | 58 |
 
 _Score 0–100, relativo aos temas monitorados. Metodologia no próprio PDF._
 

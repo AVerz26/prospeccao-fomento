@@ -1,20 +1,20 @@
 ﻿id,tema,score,data
-agro_digital_ia,"Agricultura digital, IA e agricultura de precisão",77.3,2026-10-19
-seguranca_alimentar,"Segurança alimentar, nutrição e cadeias curtas",76.1,2026-10-19
-carbono_restauracao,"Mercado de carbono, restauração e pagamento por serviços ambientais",74.2,2026-10-19
-bioeconomia_amazonia_cerrado,"Bioeconomia, sociobiodiversidade (Amazônia, Cerrado, Pantanal)",71.5,2026-10-19
-sensoriamento_geotecnologia,"Sensoriamento remoto, satélites e geotecnologias",71.3,2026-10-19
-agro_regenerativo_carbono,"Agricultura regenerativa, carbono no solo e ILPF",61.1,2026-10-19
-saude_unica,"Saúde única, zoonoses e doenças tropicais",60.2,2026-10-19
-proteina_alimentos_valor,"Alimentos, proteínas alternativas e agregação de valor",60.2,2026-10-19
-agua_irrigacao,"Segurança hídrica, irrigação e saneamento",58.5,2026-10-19
-genetica_melhoramento,"Melhoramento genético, edição gênica e fenotipagem",57.8,2026-10-19
-clima_adaptacao,"Mudanças climáticas, eventos extremos e adaptação",57.5,2026-10-19
+carbono_restauracao,"Mercado de carbono, restauração e pagamento por serviços ambientais",75.7,2026-10-19
+seguranca_alimentar,"Segurança alimentar, nutrição e cadeias curtas",75.6,2026-10-19
+agro_digital_ia,"Agricultura digital, IA e agricultura de precisão",75.4,2026-10-19
+bioeconomia_amazonia_cerrado,"Bioeconomia, sociobiodiversidade (Amazônia, Cerrado, Pantanal)",71.3,2026-10-19
+sensoriamento_geotecnologia,"Sensoriamento remoto, satélites e geotecnologias",70.9,2026-10-19
+agro_regenerativo_carbono,"Agricultura regenerativa, carbono no solo e ILPF",62.2,2026-10-19
+saude_unica,"Saúde única, zoonoses e doenças tropicais",61.5,2026-10-19
+proteina_alimentos_valor,"Alimentos, proteínas alternativas e agregação de valor",58.9,2026-10-19
+genetica_melhoramento,"Melhoramento genético, edição gênica e fenotipagem",58.5,2026-10-19
+agua_irrigacao,"Segurança hídrica, irrigação e saneamento",58.1,2026-10-19
+clima_adaptacao,"Mudanças climáticas, eventos extremos e adaptação",58.1,2026-10-19
 pecuaria_baixa_emissao,"Pecuária sustentável, metano e bem-estar animal",56.1,2026-10-19
 transicao_energetica,"Transição energética: solar, hidrogênio verde e eletrificação",55.7,2026-10-19
-bioenergia_combustiveis,"Bioenergia, etanol de milho e combustíveis sustentáveis",52.1,2026-10-19
-rastreabilidade_desmatamento,Rastreabilidade e cadeias livres de desmatamento (EUDR),52.0,2026-10-19
-economia_circular,"Economia circular, biomateriais e resíduos do agro",47.6,2026-10-19
-manejo_fogo,Manejo integrado do fogo e queimadas,47.3,2026-10-19
-robotica_drones,"Robótica, drones e automação agrícola",45.9,2026-10-19
-bioinsumos,Bioinsumos e controle biológico,39.2,2026-10-19
+rastreabilidade_desmatamento,Rastreabilidade e cadeias livres de desmatamento (EUDR),53.1,2026-10-19
+bioenergia_combustiveis,"Bioenergia, etanol de milho e combustíveis sustentáveis",52.4,2026-10-19
+manejo_fogo,Manejo integrado do fogo e queimadas,48.3,2026-10-19
+economia_circular,"Economia circular, biomateriais e resíduos do agro",47.4,2026-10-19
+robotica_drones,"Robótica, drones e automação agrícola",44.0,2026-10-19
+bioinsumos,Bioinsumos e controle biológico,38.6,2026-10-19
