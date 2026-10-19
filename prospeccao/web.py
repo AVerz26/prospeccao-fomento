@@ -13,6 +13,32 @@ from .util import Http
 log = logging.getLogger(__name__)
 
 
+def _href_valido(href: str | None) -> bool:
+    return bool(href) and not href.startswith(("#", "javascript:", "mailto:", "tel:"))
+
+
+def _link_especifico(el, base: str) -> str | None:
+    """URL da notícia/chamada a que o texto pertence: o próprio <a>, um <a> dentro/ao redor do elemento, ou o
+    único link distinto do 'cartão' (até 3 níveis acima). Nunca devolve a própria página da fonte."""
+    cand = el if el.name == "a" else (el.find("a", href=True) or el.find_parent("a", href=True))
+    url = urljoin(base, cand["href"]) if cand is not None and _href_valido(cand.get("href")) else None
+    if url is None and cand is None:
+        node = el
+        for _ in range(3):
+            node = node.parent
+            if node is None or node.name in ("body", "html"):
+                break
+            links = {urljoin(base, a["href"]) for a in node.find_all("a", href=True) if _href_valido(a["href"])}
+            if len(links) == 1:
+                url = links.pop()
+                break
+            if len(links) > 1:
+                break
+    if url and url.split("#")[0].rstrip("/") == base.split("#")[0].rstrip("/"):
+        return None
+    return url
+
+
 def _itens_html(http: Http, src: dict) -> list[dict]:
     if not http.allowed(src["url"]):
         log.warning("robots.txt bloqueia %s — ignorado", src["nome"])
@@ -23,12 +49,16 @@ def _itens_html(http: Http, src: dict) -> list[dict]:
     soup = BeautifulSoup(html, "html.parser")
     for tag in soup(["script", "style", "nav", "footer", "noscript"]):
         tag.decompose()
-    itens = []
+    itens, vistos = [], set()
     for el in soup.find_all(["h1", "h2", "h3", "h4", "a", "li", "p"]):
         txt = " ".join(el.get_text(" ", strip=True).split())
-        if 25 <= len(txt) <= 300:
-            href = urljoin(src["url"], el["href"]) if el.name == "a" and el.get("href") else src["url"]
-            itens.append({"texto": txt, "url": href})
+        if not 25 <= len(txt) <= 300:
+            continue
+        url = _link_especifico(el, src["url"])
+        if url is None or url in vistos:      # sem link próprio da notícia, ou já coletada por outro elemento
+            continue
+        vistos.add(url)
+        itens.append({"texto": txt, "url": url})
     return itens
 
 
