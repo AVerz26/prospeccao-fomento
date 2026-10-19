@@ -6,11 +6,15 @@ import html
 import pandas as pd
 
 e = html.escape
-COR = {"Nascente": "#1a7f37", "Em aceleração": "#0969da", "Incipiente": "#8250df", "Estabelecida": "#59636e", "n/d": "#59636e"}
+COR = {"Nascente": "#1a7f37", "Em aceleração": "#0969da", "Incipiente": "#8250df", "Estabelecida": "#59636e", "n/d": "#59636e", "Dados insuficientes": "#bf8700"}
 
 
 def _n(v) -> str:
     return "n/d" if v is None or pd.isna(v) else f"{int(v):,}".replace(",", ".")
+
+
+def _sc(v) -> str:
+    return "n/d" if v is None or pd.isna(v) else f"{v:.0f}"
 
 
 def _var(rec, ant) -> str:
@@ -33,16 +37,16 @@ def html_secao(df: pd.DataFrame, techs: list[dict], dados: dict[str, dict], top_
            "(preprints, código aberto, startups e pesquisa financiada em fase inicial) — o oposto do ranking de temas acima, "
            "que premia assuntos já consolidados. Os números mostram <i>semestre recente ← semestre anterior</i> "
            "(preprints) e <i>12 meses ← 12 meses anteriores</i> (GitHub).</p>",
-           "<table><tr><th>#</th><th>Tecnologia</th><th>Score</th><th>Estágio</th><th>Preprints 6m</th><th>arXiv 6m</th>"
+           "<table class=rk><tr><th>#</th><th>Tecnologia</th><th>Score</th><th>Estágio</th><th>Preprints 6m</th><th>arXiv 6m</th>"
            "<th>Repos novos 12m</th><th>HF 90d</th><th>YC</th><th>Pesquisa inicial</th></tr>"]
     for n, (tid, r) in enumerate(df.iterrows(), 1):
-        out.append(f"<tr><td>{n}</td><td><a href='#r_{tid}'>{e(r['tecnologia'])}</a></td><td><b>{r['score']:.0f}</b></td>"
+        out.append(f"<tr><td>{n}</td><td><a href='#r_{tid}'>{e(r['tecnologia'])}</a></td><td><b>{_sc(r['score'])}</b></td>"
                    f"<td style='color:{COR.get(r['estagio'], '#000')}'><b>{e(r['estagio'])}</b></td>"
                    f"<td>{_var(r['pre_rec'], r['pre_ant'])}</td><td>{_var(r['ax_rec'], r['ax_ant'])}</td>"
                    f"<td>{_var(r['gh_rec'], r['gh_ant'])}</td><td>{_n(r['hf'])}</td><td>{_n(r['yc'])}</td>"
                    f"<td>{_n(r['hz_precoce'])}</td></tr>")
     out.append("</table>")
-    for tid, r in list(df.iterrows())[:top_cards]:
+    for tid, r in [(i, x) for i, x in df.iterrows() if pd.notna(x['score'])][:top_cards]:
         ex = dados[tid]["ex"]
         t = by_id[tid]
         out.append(f"<div class=card id=r_{tid}><h3>{e(t['nome'])} <span class=tag style='color:{COR.get(r['estagio'], '#000')}'>"
@@ -60,7 +64,8 @@ def html_secao(df: pd.DataFrame, techs: list[dict], dados: dict[str, dict], top_
         out.append("</div>")
     out.append("<h3>Como ler o radar</h3><ul>"
                "<li><b>Estágio</b>: <i>Nascente</i> = volume baixo e crescimento alto; <i>Em aceleração</i> = crescimento alto e volume já relevante; "
-               "<i>Incipiente</i> = volume baixo sem tração ainda; <i>Estabelecida</i> = volume alto, crescimento moderado.</li>"
+               "<i>Incipiente</i> = volume baixo sem tração ainda; <i>Estabelecida</i> = volume alto, crescimento moderado; "
+               "<i>Dados insuficientes</i> = poucas ocorrências nas fontes (frase de busca estreita demais ou tema ainda sem sinal): não classificado.</li>"
                "<li>Contagens pequenas oscilam muito: use o crescimento como indício e leia os exemplos antes de decidir.</li>"
                "<li>O TRL das chamadas Horizon não está disponível pela API; \"pesquisa inicial\" conta chamadas do tipo "
                "<i>Research and Innovation Actions</i>/EIC, usadas aqui como aproximação.</li>"

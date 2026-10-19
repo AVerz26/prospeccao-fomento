@@ -52,7 +52,7 @@ small,.mut{color:#59636e}a{color:#0969da}ul{margin:.3rem 0}
 @media print{body{max-width:none;margin:0;font-size:11.5px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 h1{font-size:22px}h2{font-size:17px;break-after:avoid}h3{break-after:avoid}
 .card,tr,li{break-inside:avoid}.card{margin:.8rem 0;padding:.7rem 1rem}
-th,td{padding:.2rem .4rem}td:nth-child(4){width:70px!important}td:nth-child(2){width:46%}h1{margin-top:0}.sub{font-size:11px}}"""
+th,td{padding:.2rem .4rem}.rk td:nth-child(4){width:70px!important}.rk td:nth-child(2){width:46%}h1{margin-top:0}.sub{font-size:11px}}"""
 
 
 def html_report(df, temas, ciencia, editais, midia, web, status_web, path: pathlib.Path, trends=None, radar_html: str = "") -> None:
@@ -62,7 +62,7 @@ def html_report(df, temas, ciencia, editais, midia, web, status_web, path: pathl
            "<h1>Prospecção de tendências para editais de fomento</h1>",
            f"<p class=sub>Mato Grosso · gerado em {hoje} · fontes: OpenAlex, Horizon Europe, Grants.gov, GDELT, "
            "páginas de congressos e fomento monitoradas</p>",
-           "<h2>Ranking de temas</h2><table><tr><th>#</th><th>Tema</th><th>Score</th><th></th>"
+           "<h2>Ranking de temas</h2><table class=rk><tr><th>#</th><th>Tema</th><th>Score</th><th></th>"
            "<th>Publicações</th><th>Cresc. rel.</th><th>Chamadas int.</th><th>Mídia</th></tr>"]
     for n, (tid, r) in enumerate(df.iterrows(), 1):
         out.append(f"<tr><td>{n}</td><td><a href='#{tid}'>{e(r['tema'])}</a></td><td><b>{r['score']:.0f}</b></td>"

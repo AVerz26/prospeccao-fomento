@@ -21,6 +21,7 @@ from .util import Http, or_query
 
 log = logging.getLogger(__name__)
 
+MIN_SINAIS = 12   # mínimo de ocorrências somadas nas fontes para calcular o estágio/score
 ARXIV = "https://export.arxiv.org/api/query"
 GITHUB = "https://api.github.com/search/repositories"
 YC = "https://api.ycombinator.com/v0.1/companies"
@@ -45,8 +46,9 @@ def _oa_contagem(http: Http, q: str, ini, fim, tipo: str | None = None) -> int |
 
 
 # ---------------------------------------------------------------- arXiv
-def _arxiv(http: Http, kws: list[str], ini, fim, n: int = 1) -> tuple[int | None, list[dict]]:
-    q = "(" + " OR ".join(f'all:"{k}"' for k in kws[:4]) + f") AND submittedDate:[{ini:%Y%m%d}0000 TO {fim:%Y%m%d}2359]"
+def _arxiv(http: Http, kws: list[str], ini, fim, n: int = 1, ctx: list[str] | None = None) -> tuple[int | None, list[dict]]:
+    c = f" AND ({' OR '.join(f'all:{w}' for w in ctx)})" if ctx else ""
+    q = "(" + " OR ".join(f'all:"{k}"' for k in kws[:6]) + f"){c} AND submittedDate:[{ini:%Y%m%d}0000 TO {fim:%Y%m%d}2359]"
     xml = http.request("GET", ARXIV, params={"search_query": q, "start": 0, "max_results": max(n, 1),
                                              "sortBy": "submittedDate", "sortOrder": "descending"}, min_interval=3.5)
     if not xml:
@@ -137,15 +139,19 @@ def coletar(http: Http, techs: list[dict]) -> dict[str, dict]:
     out: dict[str, dict] = {}
     for t in techs:
         kw, busca = t["kw"], t.get("busca", [])
-        q = or_query(kw, 6)
+        ctx = t.get("ctx") or []
+        q = or_query(kw, 6) + (f" AND ({' OR '.join(ctx)})" if ctx else "")
         d: dict = {"ex": {}}
         d["pre_rec"] = _oa_contagem(http, q, *w["rec6"], tipo="preprint")
         d["pre_ant"] = _oa_contagem(http, q, *w["ant6"], tipo="preprint")
         d["oa_total12"] = _oa_contagem(http, q, *w["rec12"])
-        d["ax_rec"], d["ex"]["arxiv"] = _arxiv(http, kw, *w["rec6"], n=3)
-        d["ax_ant"], _ = _arxiv(http, kw, *w["ant6"])
-        d["gh_rec"], d["ex"]["github"] = _github(http, kw, *w["rec12"], n=3)
-        d["gh_ant"], _ = _github(http, kw, *w["ant12"])
+        d["ax_rec"], d["ex"]["arxiv"] = _arxiv(http, kw, *w["rec6"], n=3, ctx=ctx)
+        d["ax_ant"], _ = _arxiv(http, kw, *w["ant6"], ctx=ctx)
+        if ctx:   # a busca do GitHub não aceita trava de contexto sem zerar: sinal indisponível para estas tecnologias
+            d["gh_rec"], d["gh_ant"], d["ex"]["github"] = None, None, []
+        else:
+            d["gh_rec"], d["ex"]["github"] = _github(http, kw, *w["rec12"], n=3)
+            d["gh_ant"], _ = _github(http, kw, *w["ant12"])
         hfm, d["ex"]["hf_modelos"] = _hf(http, busca[0], "models") if busca else (None, [])
         hfd, d["ex"]["hf_datasets"] = _hf(http, busca[0], "datasets") if busca else (None, [])
         d["hf"] = None if hfm is None and hfd is None else (hfm or 0) + (hfd or 0)
@@ -211,4 +217,9 @@ def calcular(techs: list[dict], pesos: dict, dados: dict[str, dict]) -> pd.DataF
             return "Em aceleração"
         return "Incipiente" if v <= 35 else "Estabelecida"
     df["estagio"] = [estagio(i) for i in df.index]
+    # sinais somados: abaixo disso as contagens são ruído (0 vs 0 não é "nascente", é falta de dado)
+    cols = ["pre_rec", "pre_ant", "ax_rec", "ax_ant", "gh_rec", "gh_ant", "hf", "yc", "agf", "hz_total"]
+    insuf = df[cols].fillna(0).sum(axis=1) < MIN_SINAIS
+    df.loc[insuf, "estagio"] = "Dados insuficientes"
+    df.loc[insuf, "score"] = np.nan
     return df.sort_values("score", ascending=False)

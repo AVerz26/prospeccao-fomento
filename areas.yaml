@@ -1,0 +1,76 @@
+# Dossiê de dados por área: as 9 ideias de fomento ICT para Mato Grosso com potencial de expansão.
+# kw/ctx: buscas em inglês no OpenAlex (frases curtas; ctx = palavras que precisam co-ocorrer, vazio = sem trava).
+# pt: palavras-chave simples para proposições legislativas (Câmara dos Deputados).
+# wb: termos para projetos do Banco Mundial no Brasil. territorio: indicadores IBGE/INPE relacionados.
+
+# ICTs de Mato Grosso acompanhadas (IDs do OpenAlex, verificados).
+icts_mt:
+  - {id: I32725510,   nome: UFMT}
+  - {id: I3017928408, nome: UNEMAT}
+  - {id: I3018305852, nome: IFMT}
+  - {id: I4405282871, nome: Embrapa Agrossilvipastoril}
+
+areas:
+  - id: gemeos_digitais
+    nome: Rede de gêmeos digitais de sistemas de produção
+    kw: ["digital twin", "crop model", "crop simulation model"]
+    ctx: ["farm", "crop", "agriculture"]
+    pt: ["agricultura digital", "agricultura de precisão"]
+    wb: ["digital agriculture"]
+    territorio: [soja, milho]
+  - id: observacao_terra
+    nome: Observação da Terra com IA (uso do solo, safra, fogo)
+    kw: ["remote sensing", "earth observation", "land cover mapping", "satellite imagery"]
+    ctx: ["crop", "agriculture", "land use", "deforestation", "vegetation"]
+    pt: ["sensoriamento remoto", "geoprocessamento"]
+    wb: ["remote sensing", "geospatial"]
+    territorio: [soja, focos]
+  - id: bioeconomia
+    nome: Bioeconomia e sociobiodiversidade com rastreabilidade
+    kw: ["bioeconomy", "sociobiodiversity", "non-timber forest products", "Brazil nut", "agroforestry"]
+    ctx: []
+    pt: ["bioeconomia", "sociobiodiversidade", "extrativismo"]
+    wb: ["bioeconomy", "non-timber forest"]
+    territorio: [focos]
+  - id: mrv_carbono
+    nome: MRV de carbono no solo (ILPF, pastagem, plantio direto)
+    kw: ["soil carbon", "soil organic carbon", "carbon sequestration"]
+    ctx: ["monitoring", "measurement", "remote sensing", "machine learning", "verification"]
+    pt: ["mercado de carbono", "crédito de carbono"]
+    wb: ["soil carbon", "carbon market"]
+    territorio: [soja, rebanho]
+  - id: fogo
+    nome: Alerta precoce de incêndios e manejo integrado do fogo
+    kw: ["wildfire", "fire management", "prescribed burning", "burned area"]
+    ctx: []
+    pt: ["incêndios florestais", "queimadas", "manejo integrado do fogo"]
+    wb: ["fire management", "wildfire"]
+    territorio: [focos]
+  - id: bioinsumos
+    nome: Bioinsumos de nova geração (consórcios microbianos nativos)
+    kw: ["biological control", "biofertilizer", "biopesticide", "microbial inoculant", "plant growth-promoting bacteria"]
+    ctx: []
+    pt: ["bioinsumos", "defensivos biológicos", "inoculante"]
+    wb: ["biological inputs", "biopesticide"]
+    territorio: [soja, milho, algodao]
+  - id: rastreabilidade
+    nome: Rastreabilidade e conformidade com mercados exigentes
+    kw: ["traceability", "deforestation-free", "supply chain transparency"]
+    ctx: ["agricultural", "commodity", "soy", "cattle", "beef"]
+    pt: ["rastreabilidade", "desmatamento"]
+    wb: ["traceability", "deforestation-free"]
+    territorio: [soja, rebanho]
+  - id: pecuaria_baixa_emissao
+    nome: Pecuária de baixa emissão (metano, pastagem recuperada)
+    kw: ["enteric methane", "low-emission livestock", "pasture restoration", "silvopasture"]
+    ctx: []
+    pt: ["pecuária sustentável", "metano", "pastagens degradadas"]
+    wb: ["livestock emissions", "pasture"]
+    territorio: [rebanho]
+  - id: etanol_milho_saf
+    nome: Coprodutos do etanol de milho, SAF e biometano
+    kw: ["corn ethanol", "sustainable aviation fuel", "biomethane", "DDGS"]
+    ctx: []
+    pt: ["etanol", "combustível sustentável de aviação", "biometano", "biocombustíveis"]
+    wb: ["ethanol", "biofuels", "sustainable aviation fuel"]
+    territorio: [milho]
